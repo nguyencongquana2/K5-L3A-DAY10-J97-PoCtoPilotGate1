@@ -5,7 +5,7 @@
 - Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): `J97`
 - Lớp: `L3A`
 - Repo của bàn: `K5-L3A-DAY10-J97-PoCtoPilotGate1`
-- Thẻ sự cố đã bốc (S1–S8): Chưa bốc
+- Thẻ sự cố đã bốc (S1–S8): `S2` · Đối soát: shop bị trừ tiền lạ
 
 ## Thành viên
 
@@ -35,15 +35,22 @@ Trưởng nhóm, tích hợp và Kỹ sư cổng; xem phân công chi tiết tro
 
 ### Đóng góp cụ thể
 
-...
+- Tích hợp và chốt Phiếu B; xác minh checkpoint vòng 1 `103a019b` và quyết định v1.
+- Ghi nhận thẻ S2, chạy grade mốc prepared trước khi sửa và phân tích trace của injection, approval và giới hạn cộng dồn.
+- Bổ sung cổng tổng hoàn tự động theo khách/ngày trong `lab10/guards.py`; thêm hai monitor sự cố trong `lab10/monitors.py`.
+- Hoàn thiện Phiếu C, chạy regression trên bộ nền, chốt quyết định v2 và gom gói `submission/`.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Nhánh: `incident/s2-round2-2A202603675`.
+- Grade cuối: `R-S2-grade-20261118-174301-f26ae8` (`PASS-VISIBLE`).
+- S2 after: `R-S2-after-20261118-174301-f26ae8`; base regression: `R-base-after-20261118-174317-f26ae8`.
+- Phiếu C: C0–C2, C6–C9; code: `lab10/guards.py`, `lab10/monitors.py`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- Một điều học được: cổng đúng ở từng lệnh vẫn chưa đủ nếu rủi ro phát sinh từ trạng thái cộng dồn qua nhiều ticket; phải kiểm nguồn sự thật ở đúng phạm vi thời gian và chủ thể.
+- Một điều còn chưa chắc: production cần kiểm chứng phép đọc-cộng-ghi ledger có nguyên tử và có nhìn thấy hoàn tay đủ nhanh hay không.
 
 ## VuQuangMinh-2A202603657
 
