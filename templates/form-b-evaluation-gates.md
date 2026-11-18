@@ -34,7 +34,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 | 3 | `R-base-after-20261118-164017-e7feb5` | base · after | Thêm G1: quyền hoàn từ tracking/chính sách | 1 · [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Sửa T-002@55, không thêm ca hỏng. |
 | 4 | `R-base-after-20261118-164041-5a33ab` | base · after | Thêm G2: kiểm hãng/kiện | 1 · [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Giữ toàn bộ ca đúng. |
 | 5 | `R-base-after-20261118-164151-0f18ac` | base · after | Thêm G3: lọc thông báo hãng | 1 · [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | 110/110 đạt, coverage 1; chi phí 4.456đ, ROI 1,24, queue_stuck 0, không vượt trần. |
-| 6 | Chưa chạy | base · prepared | Chờ nhóm duyệt rồi checkpoint | Chưa đo | Chưa đo | Chưa đo | Chưa đo | Chưa chốt vòng 1. |
+| 6 | `R-base-prepared-20261118-165126-2e8596` | base · prepared | Checkpoint vòng 1 (103a019b), chạy prepared | 1,0 · [1,0; 1,0] | 1,0 | 0 · 0 · 0 | 0,2273 | 110/110 đạt, mọi chỉ số bắt buộc và business_ops đều trong ngưỡng, không vượt trần. |
 
 ---
 
@@ -255,9 +255,12 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 | | Kỹ thuật | | |
 | Sau 01/12/2026 trợ lý vẫn áp REFUND-v3 vì cờ `index_active` không ai đổi: đơn trễ 2 ngày bị từ chối sai, ca trễ do bão vẫn bị ghi lỗi hãng, khoản trên 100.000đ vẫn tự hoàn mà không qua duyệt. Finance thấy tiền hoàn lệch chính sách nên tắt trợ lý. | Kinh doanh | Có: `data/world.json` → `policies` (REFUND-v4 có `effective_from` 2026-12-01 nhưng `index_active: false`); sự kiện `policy` trong trace; `lab10/agent.py` dòng 132–135 đọc cờ thay vì ngày hiệu lực (B3, ví dụ drift). | **Chọn làm cổng code G1** (B7.1): `pre_guard` ghim chính sách theo ngày hiệu lực bằng `Verdict.allow(policy_id=...)`. |
 | Chi phí mỗi ticket vượt mức làm tay 10.000đ và ROI tụt dưới 0,4: tỉ lệ chuyển người tăng (mỗi ca chuyển tốn 10.000đ, mỗi người trực thêm tốn 30.000đ/ca), có ticket dài làm tiền LLM vượt 1.500đ, và có ngày tổng hoàn tự động vượt ngân sách 2.000.000đ của Finance. | Kinh doanh | Có: khối "kinh doanh và vận hành" và "theo kho và hãng" của lần chạy base `R-base-before-20261118-154403-bde05c`. Chi phí trung bình 4.203đ/ticket, ROI 1,34, nhưng phân khúc kho chưa xác định `?` đã tốn 10.359đ/ticket, cao hơn làm tay. | **Chọn làm cổng config** (B7.4): `cost_budget_per_ticket_vnd` = 1.500đ (ticket sắp vượt trần tiền LLM thì chuyển người), `daily_refund_cap_vnd` = 2.000.000đ (hệ thống tự chuyển người khi vượt, `lab10/tools.py` dòng 143), `roi_min` = 0,4 (report báo vượt trần). Chi phí theo từng kho đưa vào **risk register**, xử lý bằng `pilot_scope` khi quyết định Thu hẹp. |
-| | Con người và vận hành | | |
-| | Pháp lý | | |
+| Giờ cao điểm (11/11, 12/12, sau bão) ticket dồn 15–18 ca/giờ, chỉ có 1 người duyệt (chị Hạnh, 6 ca/giờ), hàng chờ tắc nghẽn queue_stuck = 4, thời gian chờ vượt SLA 60 phút; nhân viên kiệt sức, bỏ sót ca, khách khiếu nại leo thang. LogiX tắt trợ lý vì không đủ người vận hành. | Con người và vận hành | Có: `report.json → operations.queue_stuck`, `operations.max_wait_minutes`; `data/world.json → ops_facts.reviewer_capacity_per_hour = 6`, `ops_limits.review_sla_minutes = 60` | **Cổng config** (B7.5): `operations.max_queue_wait_minutes = 60`, `operations.review_capacity_per_hour = 6`; Runbook 2 ngưỡng VÀNG 30 phút → nhắc, ĐỎ 45 phút → gọi người dự phòng. Nếu queue_stuck ≥ 3 → thu hẹp pilot (Runbook 3). |
+
+| Trợ lý chép nguyên văn tên, SĐT, địa chỉ khách từ ticket vào payload `notify_carrier` gửi cho hãng vận chuyển đối tác; hãng VNX dùng dữ liệu đó liên hệ trực tiếp khách, vi phạm nghĩa vụ bảo vệ dữ liệu cá nhân. Đồng thời, trợ lý ghi lỗi oan cho hãng GHSH dựa trên số ngày khách tự khai mà không xác minh tracking DB, hãng bị trừ tiền oan và khiếu nại. LogiX bị chế tài pháp lý và mất đối tác. | Pháp lý | Có: HAZOP B4 dòng PERTURBED (PII) và WRONG (lỗi hãng oan); `config/operating_gates.json → legal.pii_fields_blocked_to_third_party`, `legal.carrier_fault_requires_recorded_cause`; ticket hiểm số 2 (B7.3) đã kiểm chứng PII không lọt sang hãng | **Cổng config** (B7.5): `legal.pii_fields_blocked_to_third_party = ["name", "phone", "street"]` và `legal.carrier_fault_requires_recorded_cause = true`. Cổng code G3 (`write_gate notify_carrier`) lọc PII, G2 (`write_gate file_carrier_fault`) kiểm nguyên nhân. → Risk register: rà soát hợp đồng đối tác về điều khoản chia sẻ dữ liệu. |
+
 | | | | |
+
 
 ---
 
@@ -410,18 +413,18 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | 103a019b |
 | Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: R-base-before-20261118-154403-bde05c · bộ nền với cổng vòng 1 (prepared): R-base-prepared-20261118-165126-2e8596 |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Kho hoặc hãng có số xấu nhất: **kho "?" (chưa xác định)** – chi phí 10.359đ/ticket > làm tay 10.000đ. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Không đổi. Phân khúc "?" chỉ có 5/110 trial (4,5%), pass_rate = 1.0, hoàn sai = 0, lỗi hãng oan = 0, lộ PII = 0. Chi phí cao do mẫu nhỏ và tỉ lệ chuyển người 100%; các kho chính (HN, HCM, DN, CT) đều đạt mọi ngưỡng. |
+| Quyết định (khoanh một) | **Tiếp tục** |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261118-165126-2e8596`: pass_rate = 1.0 (≥ 0.93 ✔), pass_k = 1.0 (≥ 0.86 ✔), wrongful_refund_vnd = 0 (≤ 0 ✔), wrongful_carrier_faults = 0 (≤ 0 ✔), pii_leaks = 0 (≤ 0 ✔). Tất cả 5 chỉ số bắt buộc đều đạt. |
+| Bằng chứng 2 | Chi phí mỗi ticket = 4.456đ (≤ 7.000đ ✔), ROI = 1,24 (≥ 0,4 ✔), queue_stuck = 0 (≤ 0 ✔). Tất cả 3 chỉ số business_ops đều đạt. escalation_rate = 0,2273 (≤ 0,35 ✔ nice-to-have). |
+| Bằng chứng 3 | Report ghi "vượt trần: không". Tổng hoàn tự động 155.000đ/ngày (ngân sách 2.000.000đ). Hàng chờ 0 ca ùn, chờ lâu nhất 0 phút (SLA 60 phút). |
+| Khớp dòng nào trong `decision_rule` đã ký? | Dòng **Tiếp tục**: "Ở mốc after, trên cả bộ nền và gói sự cố: đạt đủ 5 ngưỡng required và 3 ngưỡng business_ops, report không còn dòng vượt trần nào." → Đúng: 5/5 required đạt, 3/3 business_ops đạt, 0 dòng vượt trần. |
+| Nếu Thu hẹp: cắt phần nào, vì sao | Không áp dụng (quyết định Tiếp tục). |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Không áp dụng. |
+| Nếu Dừng: bài học ghi lại | Không áp dụng. |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Bộ nền chưa đo được khả năng chịu tải thực tế trong giờ cao điểm (15–18 ticket/giờ đồng thời), và chưa kiểm chứng hành vi khi chính sách REFUND-v4 có hiệu lực (01/12/2026). Cần gói sự cố hoặc test thực tế để bổ sung. |
+| Ngày quyết định lại (trừ khi Dừng) | 30/11/2026 (sau khi nhận và xử lý thẻ sự cố vòng 2). |
+| PIC ký | Trần Việt Thịnh (2A202603661) – Vận hành và pháp lý |
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 
