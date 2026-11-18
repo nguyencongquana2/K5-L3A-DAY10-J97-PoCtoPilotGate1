@@ -2,10 +2,10 @@
 
 ## Thông tin nhóm
 
-- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng):
-- Lớp: `L3A` / `L3B`
-- Repo của bàn: `K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1`
-- Thẻ sự cố đã bốc (S1–S8):
+- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): `J97`
+- Lớp: `L3A`
+- Repo của bàn: `K5-L3A-DAY10-J97-PoCtoPilotGate1`
+- Thẻ sự cố đã bốc (S1–S8): Chưa bốc
 
 ## Thành viên
 
@@ -19,6 +19,11 @@ Họ tên đầy đủ và MSSV của **mọi** thành viên; thêm dòng nếu 
 |   4 |           |      |     |             |
 
 Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, khớp bảng trên.
+
+## Kế hoạch phân công
+
+Đọc [`WORKPLAN.md`](WORKPLAN.md) trước khi bắt đầu. Trưởng nhóm điền tên người nhận từng ghế trong bảng phân công của file đó.
+Mỗi thành viên làm trên branch riêng, không tự chạy lệnh ký tiêu chí hoặc chốt vòng 1.
 
 ## Cá nhân
 
