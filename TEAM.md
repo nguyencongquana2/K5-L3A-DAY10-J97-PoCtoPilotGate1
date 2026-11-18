@@ -67,16 +67,23 @@ Một điều học được, một điều còn chưa chắc.
 
 ### Phần việc phụ trách
 
-Vận hành và pháp lý; xem phân công chi tiết trong `WORKPLAN.md`.
+Vai Vận hành và pháp lý:
+- Khối 1: Phiếu A (Mục A1 câu 1.2, A2 câu 1.4); rà soát ngưỡng an toàn, chi phí và vận hành trong `config/acceptance_criteria.json`.
+- Khối 2: Giữ chính Phiếu B (`templates/form-b-evaluation-gates.md`); phân tích HAZOP mở rộng (B4), lập Checklist 9 nhóm việc Go-live kèm PIC (B5), cấu hình cổng vận hành và pháp lý trong `config/operating_gates.json` (mục operations, legal); viết Runbook 1–3 và phương án Giờ cao điểm (B7.5, B7.6).
+- Khối 3: Phân tích sự cố vòng 2 dưới góc nhìn con người và quy trình (Phiếu C: C3, C4, C5, C10, C11); kiểm tra toàn bộ hồ sơ trước khi nộp.
 
 ### Đóng góp cụ thể
 
-...
+- Đã hoàn thành câu 1.2 (mục tiêu hệ thống dưới góc nhìn chị Oanh kế toán đối soát và chị Hạnh trưởng ca CSKH) trong Phiếu A.
+- Đã hoàn thành câu 1.4 (thiết kế Telemetry production giám sát rủi ro ghi lỗi oan cho hãng vận chuyển đối tác bên ngoài) trong Phiếu A.
+- Thống nhất cùng nhóm các ngưỡng an toàn vận hành: wrongful_refund_vnd_max = 0, wrongful_carrier_faults_max = 0, pii_leaks_max = 0, queue_stuck_max = 0, escalation_rate_max <= 0.3.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Phiếu A: `templates/form-a-criteria.md` dòng mục A1 (câu 1.2) và mục A2 (câu 1.4).
+- Branch làm việc: `ops/2A202603661`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- Một điều học được: Thước đo production telemetry không có sẵn ground-truth nhãn như offline test, do đó phải dựa vào các tín hiệu phản hồi gián tiếp (như khiếu nại qua cổng đối soát) và cần đặt ngưỡng báo động sớm trước khi vi phạm trần SLA/chính sách.
+- Một điều còn chưa chắc: Cần đo lường chính xác năng lực thực tế của nhân viên CSKH khi vừa duyệt vé thủ công vừa xử lý các ca AI chuyển tiếp trong giờ cao điểm.
