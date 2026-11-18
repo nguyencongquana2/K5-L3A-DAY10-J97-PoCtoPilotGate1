@@ -253,7 +253,8 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 | Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được hôm nay? (trace / data / config nào) | Thành cổng phòng ngừa nào (code hay config) / hay vào risk register |
 |---|---|---|---|
 | | Kỹ thuật | | |
-| | Kinh doanh | | |
+| Sau 01/12/2026 trợ lý vẫn áp REFUND-v3 vì cờ `index_active` không ai đổi: đơn trễ 2 ngày bị từ chối sai, ca trễ do bão vẫn bị ghi lỗi hãng, khoản trên 100.000đ vẫn tự hoàn mà không qua duyệt. Finance thấy tiền hoàn lệch chính sách nên tắt trợ lý. | Kinh doanh | Có: `data/world.json` → `policies` (REFUND-v4 có `effective_from` 2026-12-01 nhưng `index_active: false`); sự kiện `policy` trong trace; `lab10/agent.py` dòng 132–135 đọc cờ thay vì ngày hiệu lực (B3, ví dụ drift). | **Chọn làm cổng code G1** (B7.1): `pre_guard` ghim chính sách theo ngày hiệu lực bằng `Verdict.allow(policy_id=...)`. |
+| Chi phí mỗi ticket vượt mức làm tay 10.000đ và ROI tụt dưới 0,4: tỉ lệ chuyển người tăng (mỗi ca chuyển tốn 10.000đ, mỗi người trực thêm tốn 30.000đ/ca), có ticket dài làm tiền LLM vượt 1.500đ, và có ngày tổng hoàn tự động vượt ngân sách 2.000.000đ của Finance. | Kinh doanh | Có: khối "kinh doanh và vận hành" và "theo kho và hãng" của lần chạy base `R-base-before-20261118-154403-bde05c`. Chi phí trung bình 4.203đ/ticket, ROI 1,34, nhưng phân khúc kho chưa xác định `?` đã tốn 10.359đ/ticket, cao hơn làm tay. | **Chọn làm cổng config** (B7.4): `cost_budget_per_ticket_vnd` = 1.500đ (ticket sắp vượt trần tiền LLM thì chuyển người), `daily_refund_cap_vnd` = 2.000.000đ (hệ thống tự chuyển người khi vượt, `lab10/tools.py` dòng 143), `roi_min` = 0,4 (report báo vượt trần). Chi phí theo từng kho đưa vào **risk register**, xử lý bằng `pilot_scope` khi quyết định Thu hẹp. |
 | | Con người và vận hành | | |
 | | Pháp lý | | |
 | | | | |
