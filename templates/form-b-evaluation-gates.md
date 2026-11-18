@@ -225,23 +225,33 @@ Trạng thái: **Xong** (có bằng chứng) · **Chưa** · **Không áp dụng
 
 <a id="b6"></a>
 
-## B6 · Câu 2.5 · Pre-mortem bốn lăng kính → cổng phòng ngừa (khoảng 8–10 phút, cả bàn)
+# B6 · Câu 2.5 · Pre-mortem bốn lăng kính → cổng phòng ngừa
 
-*Mọi bàn làm pre-mortem ở vòng 1, TRƯỚC khi biết sự cố, để chọn 2–3 cổng phòng ngừa sẽ dựng. Ở vòng 2 bàn mở lại phần này ở
-Phiếu C mục C1 (bút khác màu).*
+**Thời lượng:** Khoảng 8–10 phút  
+**Hình thức:** Cả bàn cùng thực hiện.
 
-**Khung tư duy.** Hỏi "có rủi ro gì không" thì ai cũng dè dặt. Nói "nó đã hỏng rồi, vì sao" thì mọi người được phép nói ra
-điều mình vẫn lo. Làm im lặng trước, đọc sau, để ý kiến của người nói to không lấn át.
+> Mọi bàn làm pre-mortem ở vòng 1, TRƯỚC khi biết sự cố, để chọn 2–3 cổng phòng ngừa sẽ dựng. Ở vòng 2, bàn mở lại phần này ở Phiếu C mục C1 (bút khác màu).
 
-**Đề bài (đọc to):** *"Ba tháng sau pilot, LogiX phải tắt trợ lý hoàn tiền ở cả hai depot. Chuyện gì đã xảy ra?"*
+## 1. Khung tư duy
 
-1. **2 phút, im lặng:** mỗi người viết 2 lý do, mỗi lý do một dòng.
-2. **2 phút:** đọc vòng tròn, mỗi lượt một lý do, không bình luận. Gộp lý do trùng.
-3. **2 phút:** xếp từng lý do vào một **lăng kính**. Lăng kính nào còn trống thì cả bàn viết thêm ít nhất một lý do cho nó.
-4. **2 phút:** chọn 2–3 lý do sẽ biến thành **cổng phòng ngừa** ngay hôm nay (code trong `guards.py` hoặc con số trong
-   `config/operating_gates.json`). Lý do còn lại → Risk register.
+Hỏi "có rủi ro gì không" thì ai cũng dè dặt. Nói "nó đã hỏng rồi, vì sao" thì mọi người được phép nói ra điều mình vẫn lo.
 
-Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba lăng kính sau hơn là ở lăng kính đầu):
+Làm im lặng trước, đọc sau, để ý kiến của người nói to không lấn át.
+
+**Đề bài (đọc to):**
+
+*"Ba tháng sau pilot, LogiX phải tắt trợ lý hoàn tiền ở cả hai depot. Chuyện gì đã xảy ra?"*
+
+## 2. Quy trình thực hiện
+
+1. **2 phút – Im lặng:** Mỗi người viết 2 lý do, mỗi lý do một dòng.
+2. **2 phút – Đọc vòng tròn:** Mỗi lượt một lý do, không bình luận. Gộp các lý do trùng nhau.
+3. **2 phút – Phân loại:** Xếp từng lý do vào một lăng kính. Lăng kính nào còn trống thì cả bàn viết thêm ít nhất một lý do cho nó.
+4. **2 phút – Chọn cổng phòng ngừa:** Chọn 2–3 lý do sẽ biến thành cổng phòng ngừa ngay hôm nay (code trong `guards.py` hoặc con số trong `config/operating_gates.json`). Các lý do còn lại đưa vào Risk register.
+
+## 3. Bốn lăng kính (bắt buộc đủ cả bốn)
+
+> Dự án AI hay chết ở ba lăng kính sau hơn là ở lăng kính đầu.
 
 | Lăng kính | Câu hỏi gợi ý trên LogiX |
 |---|---|
@@ -250,18 +260,28 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 | **Con người và vận hành** | Ai duyệt, mấy người, mỗi giờ được mấy ca? Lượng việc tăng gấp ba thì sao? Nhân viên có tin trợ lý không? |
 | **Pháp lý** | Dữ liệu cá nhân của ai rời hệ thống? Bên thứ ba nào bị ghi lỗi, bị trừ tiền mà không được hỏi? |
 
-| Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được hôm nay? (trace / data / config nào) | Thành cổng phòng ngừa nào (code hay config) / hay vào risk register |
+## 4. Bảng phân tích pre-mortem và cổng phòng ngừa
+
+| Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được hôm nay? (trace / data / config nào) | Thành cổng phòng ngừa nào (code hay config) / hay vào Risk register |
 |---|---|---|---|
-| Trợ lý đã tin số ngày trễ và số tiền do model suy diễn từ nội dung ticket thay vì tính lại từ tracking và chính sách; lệnh hoàn không đảo ngược đã ghi 20.000đ cho `T-002@55` dù DB chỉ ghi trễ 2 ngày và quyền lợi đúng là 0đ. | Kỹ thuật | Có: trace `T-002@55`; `data/world.json` → `tracking`, `policies`, `ledger`; lần chạy base `R-base-before-20261118-154403-bde05c` ghi nhận hoàn sai 20.000đ. | **Chọn làm cổng code G1** (B7.1): `pre_guard` ghim chính sách theo ngày hiệu lực; `write_gate(issue_refund)` tính lại quyền lợi từ DB, kiểm khoản đã hoàn và phê duyệt trước khi ghi sổ. |
-| Trợ lý đã dùng hãng, kiện, nguyên nhân trễ và payload do model tạo để ghi lỗi rồi báo đối tác; `T-002@55` bị ghi oan cho VNX, còn nội dung tự do của khách có thể mang PII ra ngoài trước khi lỗi hãng được xác minh. | Kỹ thuật | Có: trace `T-002@55`; `data/world.json` → `tracking` và `policies[].carrier_notice_fields`; hai ticket hiểm ở B7.3 kiểm cả ghi lỗi oan và trường được phép gửi hãng. | **Chọn làm cổng code G2–G3** (B7.1): `write_gate(file_carrier_fault)` đối chiếu đúng kiện/hãng/tài xế/độ trễ với DB; `write_gate(notify_carrier)` chỉ cho gửi sau bản ghi lỗi hợp lệ và tự dựng payload theo allowlist, không chuyển tiếp `customer_note`/PII. |
-| Sau 01/12/2026 trợ lý vẫn áp REFUND-v3 vì cờ `index_active` không ai đổi: đơn trễ 2 ngày bị từ chối sai, ca trễ do bão vẫn bị ghi lỗi hãng, khoản trên 100.000đ vẫn tự hoàn mà không qua duyệt. Finance thấy tiền hoàn lệch chính sách nên tắt trợ lý. | Kinh doanh | Có: `data/world.json` → `policies` (REFUND-v4 có `effective_from` 2026-12-01 nhưng `index_active: false`); sự kiện `policy` trong trace; `lab10/agent.py` dòng 132–135 đọc cờ thay vì ngày hiệu lực (B3, ví dụ drift). | **Chọn làm cổng code G1** (B7.1): `pre_guard` ghim chính sách theo ngày hiệu lực bằng `Verdict.allow(policy_id=...)`. |
-| Chi phí mỗi ticket vượt mức làm tay 10.000đ và ROI tụt dưới 0,4: tỉ lệ chuyển người tăng (mỗi ca chuyển tốn 10.000đ, mỗi người trực thêm tốn 30.000đ/ca), có ticket dài làm tiền LLM vượt 1.500đ, và có ngày tổng hoàn tự động vượt ngân sách 2.000.000đ của Finance. | Kinh doanh | Có: khối "kinh doanh và vận hành" và "theo kho và hãng" của lần chạy base `R-base-before-20261118-154403-bde05c`. Chi phí trung bình 4.203đ/ticket, ROI 1,34, nhưng phân khúc kho chưa xác định `?` đã tốn 10.359đ/ticket, cao hơn làm tay. | **Chọn làm cổng config** (B7.4): `cost_budget_per_ticket_vnd` = 1.500đ (ticket sắp vượt trần tiền LLM thì chuyển người), `daily_refund_cap_vnd` = 2.000.000đ (hệ thống tự chuyển người khi vượt, `lab10/tools.py` dòng 143), `roi_min` = 0,4 (report báo vượt trần). Chi phí theo từng kho đưa vào **risk register**, xử lý bằng `pilot_scope` khi quyết định Thu hẹp. |
-| Giờ cao điểm (11/11, 12/12, sau bão) ticket dồn 15–18 ca/giờ, chỉ có 1 người duyệt (chị Hạnh, 6 ca/giờ), hàng chờ tắc nghẽn queue_stuck = 4, thời gian chờ vượt SLA 60 phút; nhân viên kiệt sức, bỏ sót ca, khách khiếu nại leo thang. LogiX tắt trợ lý vì không đủ người vận hành. | Con người và vận hành | Có: `report.json → operations.queue_stuck`, `operations.max_wait_minutes`; `data/world.json → ops_facts.reviewer_capacity_per_hour = 6`, `ops_limits.review_sla_minutes = 60` | **Cổng config** (B7.5): `operations.max_queue_wait_minutes = 60`, `operations.review_capacity_per_hour = 6`; Runbook 2 ngưỡng VÀNG 30 phút → nhắc, ĐỎ 45 phút → gọi người dự phòng. Nếu queue_stuck ≥ 3 → thu hẹp pilot (Runbook 3). |
+| Trợ lý đã tin số ngày trễ và số tiền do model suy diễn từ nội dung ticket thay vì tính lại từ tracking và chính sách; lệnh hoàn không đảo ngược đã ghi 20.000đ cho `T-002@55` dù DB chỉ ghi trễ 2 ngày và quyền lợi đúng là 0đ. | **Kỹ thuật** | Có: trace `T-002@55`; `data/world.json` → `tracking`, `policies`, `ledger`; lần chạy base `R-base-before-20261118-154403-bde05c` ghi nhận hoàn sai 20.000đ. | **Chọn làm cổng code G1 (B7.1):** `pre_guard` ghim chính sách theo ngày hiệu lực; `write_gate(issue_refund)` tính lại quyền lợi từ DB, kiểm khoản đã hoàn và phê duyệt trước khi ghi sổ. |
+| Trợ lý đã dùng hãng, kiện, nguyên nhân trễ và payload do model tạo để ghi lỗi rồi báo đối tác; `T-002@55` bị ghi oan cho VNX, còn nội dung tự do của khách có thể mang PII ra ngoài trước khi lỗi hãng được xác minh. | **Kỹ thuật** | Có: trace `T-002@55`; `data/world.json` → `tracking` và `policies[].carrier_notice_fields`; hai ticket hiểm ở B7.3 kiểm cả ghi lỗi oan và trường được phép gửi hãng. | **Chọn làm cổng code G2–G3 (B7.1):** `write_gate(file_carrier_fault)` đối chiếu đúng kiện/hãng/tài xế/độ trễ với DB; `write_gate(notify_carrier)` chỉ cho gửi sau bản ghi lỗi hợp lệ và tự dựng payload theo allowlist, không chuyển tiếp `customer_note`/PII. |
+| Sau 01/12/2026 trợ lý vẫn áp REFUND-v3 vì cờ `index_active` không ai đổi: đơn trễ 2 ngày bị từ chối sai, ca trễ do bão vẫn bị ghi lỗi hãng, khoản trên 100.000đ vẫn tự hoàn mà không qua duyệt. Finance thấy tiền hoàn lệch chính sách nên tắt trợ lý. | **Kinh doanh** | Có: `data/world.json` → `policies` (REFUND-v4 có `effective_from` 2026-12-01 nhưng `index_active: false`); sự kiện `policy` trong trace; `lab10/agent.py` dòng 132–135 đọc cờ thay vì ngày hiệu lực (B3, ví dụ drift). | **Chọn làm cổng code G1 (B7.1):** `pre_guard` ghim chính sách theo ngày hiệu lực bằng `Verdict.allow(policy_id=...)`. |
+| Chi phí mỗi ticket vượt mức làm tay 10.000đ và ROI tụt dưới 0,4: tỉ lệ chuyển người tăng (mỗi ca chuyển tốn 10.000đ, mỗi người trực thêm tốn 30.000đ/ca), có ticket dài làm tiền LLM vượt 1.500đ, và có ngày tổng hoàn tự động vượt ngân sách 2.000.000đ của Finance. | **Kinh doanh** | Có: khối "kinh doanh và vận hành" và "theo kho và hãng" của lần chạy base `R-base-before-20261118-154403-bde05c`. Chi phí trung bình 4.203đ/ticket, ROI 1,34, nhưng phân khúc kho chưa xác định `?` đã tốn 10.359đ/ticket, cao hơn làm tay. | **Chọn làm cổng config (B7.4):** `cost_budget_per_ticket_vnd` = 1.500đ (ticket sắp vượt trần tiền LLM thì chuyển người); `daily_refund_cap_vnd` = 2.000.000đ (hệ thống tự chuyển người khi vượt, `lab10/tools.py` dòng 143); `roi_min` = 0,4 (report báo vượt trần). Chi phí theo từng kho đưa vào **Risk register**, xử lý bằng `pilot_scope` khi quyết định Thu hẹp. |
+| Giờ cao điểm (11/11, 12/12, sau bão) ticket dồn 15–18 ca/giờ, chỉ có 1 người duyệt (chị Hạnh, 6 ca/giờ), hàng chờ tắc nghẽn `queue_stuck = 4`, thời gian chờ vượt SLA 60 phút; nhân viên kiệt sức, bỏ sót ca, khách khiếu nại leo thang. LogiX tắt trợ lý vì không đủ người vận hành. | **Con người và vận hành** | Có: `report.json` → `operations.queue_stuck`, `operations.max_wait_minutes`; `data/world.json` → `ops_facts.reviewer_capacity_per_hour = 6`, `ops_limits.review_sla_minutes = 60`. | **Cổng config (B7.5):** `operations.max_queue_wait_minutes = 60`, `operations.review_capacity_per_hour = 6`. Runbook: 2 ngưỡng **VÀNG 30 phút → nhắc**, **ĐỎ 45 phút → gọi người dự phòng**. Nếu `queue_stuck ≥ 3` → thu hẹp pilot (Runbook 3). |
+| Trợ lý chép nguyên văn tên, SĐT, địa chỉ khách từ ticket vào payload `notify_carrier` gửi cho hãng vận chuyển đối tác; hãng VNX dùng dữ liệu đó liên hệ trực tiếp khách, vi phạm nghĩa vụ bảo vệ dữ liệu cá nhân. Đồng thời, trợ lý ghi lỗi oan cho hãng GHSH dựa trên số ngày khách tự khai mà không xác minh tracking DB, hãng bị trừ tiền oan và khiếu nại. LogiX bị chế tài pháp lý và mất đối tác. | **Pháp lý** | Có: HAZOP B4 dòng PERTURBED (PII) và WRONG (lỗi hãng oan); `config/operating_gates.json` → `legal.pii_fields_blocked_to_third_party`, `legal.carrier_fault_requires_recorded_cause`; ticket hiểm số 2 (B7.3) đã kiểm chứng PII không lọt sang hãng. | **Cổng config (B7.5):** `legal.pii_fields_blocked_to_third_party = ["name", "phone", "street"]` và `legal.carrier_fault_requires_recorded_cause = true`. **Cổng code:** G3 (`write_gate notify_carrier`) lọc PII; G2 (`write_gate file_carrier_fault`) kiểm nguyên nhân. **Risk register:** Rà soát hợp đồng đối tác về điều khoản chia sẻ dữ liệu. |
 
-| Trợ lý chép nguyên văn tên, SĐT, địa chỉ khách từ ticket vào payload `notify_carrier` gửi cho hãng vận chuyển đối tác; hãng VNX dùng dữ liệu đó liên hệ trực tiếp khách, vi phạm nghĩa vụ bảo vệ dữ liệu cá nhân. Đồng thời, trợ lý ghi lỗi oan cho hãng GHSH dựa trên số ngày khách tự khai mà không xác minh tracking DB, hãng bị trừ tiền oan và khiếu nại. LogiX bị chế tài pháp lý và mất đối tác. | Pháp lý | Có: HAZOP B4 dòng PERTURBED (PII) và WRONG (lỗi hãng oan); `config/operating_gates.json → legal.pii_fields_blocked_to_third_party`, `legal.carrier_fault_requires_recorded_cause`; ticket hiểm số 2 (B7.3) đã kiểm chứng PII không lọt sang hãng | **Cổng config** (B7.5): `legal.pii_fields_blocked_to_third_party = ["name", "phone", "street"]` và `legal.carrier_fault_requires_recorded_cause = true`. Cổng code G3 (`write_gate notify_carrier`) lọc PII, G2 (`write_gate file_carrier_fault`) kiểm nguyên nhân. → Risk register: rà soát hợp đồng đối tác về điều khoản chia sẻ dữ liệu. |
+---
 
-| | | | |
+## 5. Kết quả cần đạt
 
+Sau hoạt động, cả bàn cần có:
+
+- Đủ ít nhất một lý do thất bại thuộc mỗi lăng kính.
+- Xác định được trace, data hoặc config có thể kiểm chứng từng lý do.
+- Chọn 2–3 lý do ưu tiên để chuyển thành cổng phòng ngừa bằng code hoặc config.
+- Đưa các rủi ro chưa xử lý ngay vào Risk register.
+- Có căn cứ để triển khai các cổng phòng ngừa tương ứng ở B7.
 
 ---
 
