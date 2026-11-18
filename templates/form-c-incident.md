@@ -134,21 +134,20 @@ Chỗ hai cột lệch nhau chính là nơi đặt gate.
 
 | Dấu hiệu | Có? | Bằng chứng trong thẻ / data |
 |---|---|---|
-| Việc này đụng tới lĩnh vực nhạy cảm: tiền, quan hệ kinh doanh với đối tác | | |
-| Hệ trọng cao và cách làm bằng AI còn mới với người liên quan: họ muốn nắm quyền lúc đầu để xây lòng tin | | |
-| Hệ thống còn lâu mới đạt độ chính xác mong muốn; quyền của con người là biện pháp tạm trong lúc chờ | | |
-| Giới hạn hoặc lỗi của hệ thống cần con người sửa lại | | |
-| Hoàn cảnh thay đổi khiến con người phải "đặt lại" hoặc "tiếp quản" (phê duyệt hết hạn, bị thu hồi; chính sách đổi) | | |
+| Việc này đụng tới lĩnh vực nhạy cảm: tiền, quan hệ kinh doanh với đối tác | Có | Bảng đối soát shop bị trừ tiền lạ: Gốm Bát Tràng Cô Lụa bị trừ 475.000đ và 3.230.000đ do đơn giao trễ; Cô Lụa gọi khiếu nại 2 lần, đe dọa trực tiếp quan hệ kinh doanh và đối tác đối soát của LogiX. |
+| Hệ trọng cao và cách làm bằng AI còn mới với người liên quan: họ muốn nắm quyền lúc đầu để xây lòng tin | Có | Khoản 3.230.000đ không có mã phê duyệt nào nhưng AI vẫn tự ý ghi sổ cái trừ nợ shop; đối tác chưa tin tưởng trợ lý tự động và đòi hỏi chứng từ do con người ký duyệt. |
+| Hệ thống còn lâu mới đạt độ chính xác mong muốn; quyền của con người là biện pháp tạm trong lúc chờ | Có | Model nhầm lẫn giữa lỗi giao hàng trễ (thuộc trách nhiệm LogiX) với lỗi do người bán (`MERCHANT`), dẫn đến gán sai người trả tiền `payer`; cần người duyệt thủ công với mọi khoản trừ tiền shop. |
+| Giới hạn hoặc lỗi của hệ thống cần con người sửa lại | Có | 1 khách hàng nhận liên tiếp 5 khoản hoàn tự động trong cùng 1 ngày (ticket `S2-40` đến `S2-44`) vượt mức Ops từng thống nhất; hệ thống thiếu cơ chế kiểm soát tần suất/hạn mức ngày của từng khách. |
+| Hoàn cảnh thay đổi khiến con người phải "đặt lại" hoặc "tiếp quản" (phê duyệt hết hạn, bị thu hồi; chính sách đổi) | Có | Các khoản hoàn vượt trần tự động (> 200.000đ theo REFUND-v3) phải có `approval_id` còn hiệu lực của chị Hạnh (`NV-HANH`); trợ lý không được tự ý hoàn tiền khi thiếu mã phê duyệt hợp lệ. |
 
 **Bước 2 · Bảng mức kiểm soát**
 
 | Ai (vai, tên trong `staff` nếu có) | Việc / lệnh ghi | Mức kiểm soát họ **cần** (thấp / vừa / cao / chưa rõ) | Mức hệ thống **đang cho** (xem trace) | Lệch? |
 |---|---|---|---|---|
-| | `issue_refund` dưới hạn mức tự động | | | |
-| | `issue_refund` trên hạn mức tự động (S8 chỉ điền dòng này) | | | |
-| | `issue_refund` mà người trả là shop | | | |
-| | nhiều khoản hoàn tự động cho một khách trong ngày | | | |
-| | | | | |
+| Trưởng ca CSKH (Trần Thị Hạnh) | `issue_refund` dưới hạn mức tự động | Thấp (chỉ cần hậu kiểm mẫu 10%, cho phép trợ lý tự động hoàn nếu đủ căn cứ tracking DB và người trả là LOGIX) | Cao (hệ thống tự động thực hiện hoàn tiền) | Không |
+| Trưởng ca CSKH (Trần Thị Hạnh) | `issue_refund` trên hạn mức tự động (S8 chỉ điền dòng này) | Cao (bắt buộc có mã phê duyệt `approval_id` hợp lệ còn hạn, đúng thẩm quyền và số tiền) | Thấp (hệ thống tự động cho qua hoặc bỏ qua kiểm tra approval, hoàn 3.230.000đ mà không có mã duyệt) | Lệch → Trả quyền cho chị Hạnh: thiếu approval_id hợp lệ thì chặn và chuyển người duyệt. |
+| Kế toán đối soát (Phạm Kiều Oanh) | `issue_refund` mà người trả là shop | Cao (tuyệt đối không cho AI tự trừ nợ shop khi giao trễ; phải có biên bản đối soát và xác nhận lỗi shop) | Thấp (AI tự động ghi sổ cái nợ shop `payer: MERCHANT`, tự trừ 475.000đ của shop Cô Lụa) | Lệch nghiêm trọng → Trả quyền cho chị Oanh: cấm AI tự động trừ tiền shop, `payer` tự động chỉ được là `LOGIX`. |
+| Giám sát vận hành (Lê Thanh Tùng) | nhiều khoản hoàn tự động cho một khách trong ngày | Cao (cần trần tích lũy ngày/khách hàng để phát hiện và ngăn chặn hành vi lạm dụng trục lợi) | Thấp (hệ thống xử lý từng ticket rời rạc, để 1 khách nhận 5 khoản hoàn trong ngày) | Lệch → Trả quyền cho Ops/CSKH: thiết lập trần hoàn khách/ngày, vượt trần chuyển người thẩm định. |
 
 → Mỗi dòng "Lệch" là một nhánh của fault tree và một ứng viên cho gate. Ghi rõ gate **trả quyền về cho ai** (chuyển người
 duyệt, chờ duyệt, trần).
@@ -232,13 +231,13 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 
 *Mục riêng, không ghi đè HAZOP vòng 1 ở Phiếu B mục B4. Năm guideword và nghĩa của chúng: xem Phiếu B mục B4.*
 
-Tool chọn phân tích: `________________`
+Tool chọn phân tích: `issue_refund` (lệnh ghi sổ cái hoàn tiền / trừ tiền)
 
 | Tham số / dòng dữ liệu | Guideword (WRONG / INVALID / INCOMPLETE / PERTURBED / INCAPABLE) | Lệch cụ thể (mã ticket, trường dữ liệu của thẻ) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
-| | | | | | |
-| | | | | | |
-| | | | | | |
+| `payer` | WRONG | Ticket `S2-01`, `S2-04`: Đơn hàng trễ 4 ngày do vận chuyển (trách nhiệm của LogiX), nhưng model gán `payer: MERCHANT`, trừ tiền của shop Gốm Bát Tràng Cô Lụa 475.000đ. | Shop Cô Lụa bị mất tiền oan, khiếu nại đối soát 2 lần với chị Oanh; LogiX có nguy cơ mất khách hàng doanh nghiệp và bị phạt vi phạm hợp đồng hợp tác. | Chưa có gì ngăn ở mốc base; model tự quyết định `payer` từ suy luận prompt. | Cổng kỹ thuật trong `write_gate(issue_refund)` cưỡng chế `payer == "LOGIX"` đối với các đơn giao trễ; cấm tự động trừ tiền shop (`legal.forbid_auto_merchant_debit = true`). (Tầng: Chặn). |
+| `approval_id`, `amount_vnd` | INVALID | Ticket `S2-20`: Khoản hoàn trị giá 3.230.000đ (vượt hạn mức tự động 200.000đ), nhưng tham số `approval_id` bị để trống hoặc dùng mã phê duyệt không tồn tại / hết hạn. | Thất thoát ngân sách tài chính nghiêm trọng cho LogiX, phá vỡ hạn mức chi tiêu đã ký với Finance, chị Hạnh CSKH bị liên đới trách nhiệm kiểm toán. | Host chỉ kiểm tra kiểu dữ liệu chuỗi cơ bản, không đối soát tính hợp lệ của mã phê duyệt trong bảng `approvals`. | Cổng `write_gate(issue_refund)` kiểm tra bắt buộc: nếu `amount_vnd > auto_limit_vnd`, phải có `approval_id` hợp lệ trong `data/world.json`, còn hạn (`expires_at >= as_of`), đúng số tiền (`amount_vnd <= max_vnd`); không đạt thì chuyển người. (Tầng: Chặn / Trao quyền cho người). |
+| `customer_id`, tần suất lệnh trong ngày | PERTURBED | Loạt ticket `S2-40` đến `S2-44`: Cùng một khách hàng gửi 5 yêu cầu hoàn tiền riêng lẻ trong cùng một ngày; mỗi yêu cầu dưới 200.000đ nhưng tổng tiền vượt ngân sách và hạn mức Ops. | Bị khách hàng lạm dụng/trục lợi chính sách hoàn tiền tự động (sybil attack), ngân sách hoàn tiền trong ngày bị cạn kiệt nhanh chóng. | Hệ thống hiện chỉ xử lý stateless từng ticket độc lập, không kiểm tra lịch sử sổ cái tích lũy trong ngày của khách hàng. | Cổng `pre_guard` / `write_gate` kiểm tra `ledger`: nếu số lần hoàn tiền của khách trong ngày > 1 hoặc tổng tiền nhận trong ngày vượt trần `customer_daily_refund_cap_vnd = 200000`, lập tức chuyển sang hàng chờ duyệt tay. (Tầng: Giới hạn thiệt hại / Chuyển người). |
 
 Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chưa thấy trên trace** lúc viết.
 
@@ -370,7 +369,7 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 
 | Rủi ro | Khả năng | Tác động | Người phụ trách (PIC, một người) | Dấu hiệu (metric nào, ngưỡng nào) | Xử lý | Ảnh hưởng bước đánh giá | Nhóm chức năng (GOVERN / MAP / MEASURE / MANAGE) |
 |---|---|---|---|---|---|---|---|
-| | | | | | | | |
+| Trợ lý tự ý trừ nợ shop đối tác (`merchant_debit_vnd > 0`) khi đơn giao trễ, hoặc bị cùng một khách hàng lợi dụng hoàn tiền nhiều lần trong ngày vượt hạn mức. | Vừa | Cao | Trần Việt Thịnh (Vận hành và pháp lý) | `merchant_debit_vnd > 0` trong report hoặc monitor `merchant_debit_rate > 0`; số ca hoàn/khách/ngày > 1. | Cấm tuyệt đối AI tự trừ nợ shop (`payer == LOGIX`); thêm trần hoàn khách/ngày; ca nợ shop chuyển chị Oanh đối soát thủ công; xin lỗi và hoàn trả tiền cho shop trong 4 giờ. | Bắt buộc chọn "Dừng" hoặc "Thu hẹp" nếu `merchant_debit_vnd > 0` trên mốc after; chỉ được "Tiếp tục" khi chỉ số này triệt tiêu về 0. | MANAGE & GOVERN |
 
 Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "Dấu hiệu" phải là một metric có trong `monitors.py` hoặc trong report.
 
@@ -386,26 +385,28 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| | | | |
-| | | | |
+| 4 (Quyền hạn) | Xong | Cổng `write_gate` chặn tự động trừ nợ shop (`payer == LOGIX`), kiểm tra `approval_id` còn hiệu lực cho mọi ca hoàn > hạn mức tự động; Phiếu C mục C3.1 và C7 | Lê Thanh Tùng (Giám sát vận hành) |
+| 6 (Chi phí) | Xong | Thiết lập trần tích lũy hoàn tiền khách/ngày (`customer_daily_refund_cap_vnd`), chặn đứng trục lợi lặp lại ở loạt ticket `S2-40`..`S2-44`; `config/operating_gates.json` | Vũ Quang Minh (Sản phẩm và kinh doanh) |
+| 8 (Con người, pháp lý) | Xong | Quy trình đối soát minh bạch, bảo vệ quyền lợi shop đối tác; cam kết `merchant_debit_vnd = 0`; Runbook 4 xử lý sự cố shop Cô Lụa; Phiếu C mục C3.1, C10, C11 | Trần Việt Thịnh (Vận hành và pháp lý) |
 
 ### Runbook 4 · Sau sự cố trên thẻ (vòng 2)
 
 | Câu hỏi | Trả lời |
 |---|---|
-| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | |
-| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | |
-| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | |
-| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | |
-| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | |
-| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | |
-| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | |
+| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | Tín hiệu tổng tiền trừ nợ shop (`merchant_debit_vnd`) và số ca hoàn/khách/ngày (`refunds_per_customer`). Ở Runbook 2 vòng 1 chưa có tín hiệu này mà chỉ mới theo dõi tiền hoàn sai cho khách (`wrongful_refund_vnd`) và lỗi hãng oan (`wrongful_carrier_faults`). |
+| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | Thêm ngưỡng an toàn bắt buộc: `merchant_debit_vnd_max = 0đ` (bất kỳ đồng nào trừ shop đều kích hoạt dừng khẩn cấp); thêm trần hoàn khách/ngày: `max_refunds_per_customer_day = 1` ca tự động (tổng tiền ≤ 200.000đ/ngày/khách). |
+| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | Chị Phạm Kiều Oanh (`NV-OANH`, kế toán đối soát) giữ quyền thẩm định và phê duyệt trực tiếp mọi trường hợp đề xuất trừ tiền shop; chị Trần Thị Hạnh (`NV-HANH`) đứng tên phê duyệt mọi khoản hoàn > 200.000đ; khi có khiếu nại shop, chị Oanh trực tiếp liên hệ xử lý. |
+| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | Phạm vi: Cấm 100% việc AI tự động trừ tiền shop; mọi khoản hoàn lớn bắt buộc kèm mã phê duyệt; tăng tỉ lệ kiểm mẫu từ 10% lên 30% đối với các đơn có giá trị hàng cao (> 1.000.000đ); bắt buộc đính kèm ghi chú giải thích căn cứ hoàn tiền. |
+| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | Phạm Kiều Oanh (kế toán đối soát) gọi điện thoại trực tiếp cho đại diện shop Gốm Bát Tràng Cô Lụa trong vòng 2 giờ kể từ khi phát hiện; gửi thư xin lỗi chính thức giải thích do lỗi hệ thống thử nghiệm; cam kết hoàn trả lại 475.000đ và hủy khoản trừ sai 3.230.000đ trong kỳ chốt 16h cùng ngày. |
+| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | Không có dữ liệu cá nhân (PII) nào bị rò rỉ sang bên thứ ba trong sự cố S2 (đây là sự cố logic phân bổ tài chính giữa LogiX và shop); đã kiểm tra log payload sổ cái và xác nhận an toàn; báo cáo xác nhận cho PIC Pháp lý (Trần Việt Thịnh). |
+| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | Sự cố lộ ra qua phản hồi của con người (shop Cô Lụa gọi điện khiếu nại 2 lần cho chị Oanh) và kế toán đọc bảng đối soát định kỳ, chứ hệ thống máy đo mốc base không hề tự động báo động đỏ. Nguồn bàn còn thiếu là telemetry giám sát trường `payer` theo thời gian thực và cảnh báo tức thì khi phát sinh `payer: MERCHANT`. |
 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
-1. Nếu số ticket tăng gấp ___ lần trong một giờ thì: …
-2. Nếu nhà cung cấp LLM lỗi quá ___ phút thì: …
-3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: …
+1. Nếu số ticket tăng gấp 3 lần trong một giờ (đạt 15–18 ca/giờ) thì: Kích hoạt ngay nhân viên trực dự phòng ca 2 theo Runbook B7.6; nếu hàng chờ vượt quá 4 ca hoặc thời gian chờ vượt 30 phút thì tạm thời hạ hạn mức hoàn tự động xuống 50.000đ để xử lý nhanh ca nhỏ, chuyển toàn bộ ca lớn cho người duyệt nhằm giữ vững SLA 60 phút.
+2. Nếu nhà cung cấp LLM lỗi quá 10 phút (mã lỗi 429 hoặc 5xx liên tiếp) thì: Tự động chuyển toàn bộ ticket sang hàng chờ thủ công của CSKH; gửi thông báo báo động lên kênh Slack `#ops-refund-alerts`; anh Lê Thanh Tùng tắt công tắc ghi sổ trong `config/switches.json` để tránh nghẽn luồng.
+3. Nếu người duyệt báo không tin một quyết định của trợ lý (nghi ngờ số tiền hoàn hoặc bên chịu phí) thì: Tạm dừng xử lý tự động cho nhóm ticket liên quan; chuyển ca về chị Hạnh trưởng ca thẩm tra lại; ghi nhận mã ticket vào log soát lỗi để Kỹ sư cổng đối soát với tracking DB; nếu phát hiện lỗi logic thì ngắt công tắc ghi sổ tương ứng trong vòng 5 phút.
+
 
 ---
 
