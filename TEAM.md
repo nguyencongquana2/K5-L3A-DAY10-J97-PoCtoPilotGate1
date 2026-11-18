@@ -45,7 +45,7 @@ Trưởng nhóm, tích hợp và Kỹ sư cổng; xem phân công chi tiết tro
 - Nhánh: `incident/s2-round2-2A202603675`.
 - Grade cuối: `R-S2-grade-20261118-174301-f26ae8` (`PASS-VISIBLE`).
 - S2 after: `R-S2-after-20261118-174301-f26ae8`; base regression: `R-base-after-20261118-174317-f26ae8`.
-- Phiếu C: C0–C2, C4–C12; code: `lab10/guards.py`, `lab10/monitors.py`.
+- Phiếu C: C0–C2, C6–C9; code: `lab10/guards.py`, `lab10/monitors.py`.
 
 ### Exit ticket
 

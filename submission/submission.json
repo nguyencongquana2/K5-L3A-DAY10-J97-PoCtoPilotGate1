@@ -5,12 +5,12 @@
     "VuQuangMinh-2A202603657",
     "TranVietThinh-2A202603661"
   ],
-  "incident": "S2",
-  "decision_v1": "Tiếp tục",
-  "decision_v2": "Tiếp tục",
+  "incident": "",
+  "decision_v1": "",
+  "decision_v2": "",
   "three_lines": {
-    "environment_assumption": "Ledger trả về đầy đủ mọi khoản hoàn tay và tự động của cùng khách trong ngày, cập nhật trước lệnh kế tiếp và phép kiểm-cộng-ghi không bị hai tiến trình chạy đồng thời.",
-    "reduce_or_prevent": "Trong lab tuần tự, gate NGĂN tác hại vì vượt 300.000đ thì escalation xảy ra trước issue_refund và dừng các lệnh ghi sau; ngoài production gate chỉ GIẢM khả năng nếu ledger trễ, hoàn tay chưa đồng bộ hoặc có race condition.",
-    "measure_in_pilot": "Đo tổng hoàn theo khách/ngày sau đối soát, merchant_debit_vnd, tỉ lệ cap breach, độ trễ/race của ledger, thời gian chờ duyệt và ROI theo kho (đặc biệt HN) dưới tải thật."
+    "environment_assumption": "",
+    "reduce_or_prevent": "",
+    "measure_in_pilot": ""
   }
 }
