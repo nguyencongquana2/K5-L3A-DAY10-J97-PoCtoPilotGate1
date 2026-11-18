@@ -56,19 +56,39 @@ Trưởng nhóm, tích hợp và Kỹ sư cổng; xem phân công chi tiết tro
 
 ### Phần việc phụ trách
 
-Sản phẩm và kinh doanh; xem phân công chi tiết trong `WORKPLAN.md`.
+Sản phẩm và kinh doanh: mục tiêu, tiêu chí và ngưỡng, chi phí, ROI, phạm vi pilot, quyết định v1/v2. Người giữ Phiếu A và
+`config/acceptance_criteria.json`; xem phân công chi tiết trong `WORKPLAN.md`.
 
 ### Đóng góp cụ thể
 
-...
+- **Khối 1, Phiếu A:** viết câu 1.1 (mục tiêu cấp hệ thống), câu 1.5 (đọc khoảng tin cậy, chọn (b)) và câu 1.6 (bản tiêu chí:
+  6 câu "Nếu … thì chúng tôi sẽ …", 4 câu soát, 2 câu ranh giới đầu ra, ngày xem lại 30/11/2026); tổng hợp toàn Phiếu A.
+- **Tiêu chí chấp nhận** (`config/acceptance_criteria.json`, trước khi ký): đặt 5 ngưỡng bắt buộc, `escalation_rate_max` 0,35,
+  `business_ops` (chi phí ≤ 7.000đ/ticket, ROI ≥ 0,4, 0 ca ùn), `stop_condition` và bốn dòng `decision_rule`; mỗi ngưỡng có lý do
+  từ `data/world.json` → `ops_facts`, `ops_limits`.
+- **Khối 2, Phiếu B:** B3 (bản đồ dữ liệu; ví dụ drift REFUND-v3 → REFUND-v4 ngày 01/12/2026, khi trợ lý đọc cờ `index_active`
+  thay vì ngày hiệu lực); dòng lăng kính **Kinh doanh** của pre-mortem B6 (2 lý do, cả hai thành cổng); B7.4 cổng `business`.
+- **Cổng kinh doanh** (`config/operating_gates.json` mục `business`): đổi `cost_budget_per_ticket_vnd` 7.000 → 1.500 cho đúng
+  nghĩa trần tiền LLM mỗi ticket (`ops_limits.max_llm_cost_per_ticket_vnd`); viết lý do cho trần hoàn trong ngày, phạm vi pilot, ROI.
+- **Khối 3, Phiếu C (thẻ S2):** C5 (specification 3 vế cho `issue_refund` và giả định môi trường về `checkout_note`); dòng rủi ro
+  kinh doanh "biên chi phí mỏng" ở C10; C12 quyết định v2 **Tiếp tục** đối chiếu `decision_rule` đã ký, kèm ba dòng bắt buộc.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `7691c24` (Phiếu A và tiêu chí, trước khi ký) · `58e9f24` (B3, B7.4, `cost_budget_per_ticket_vnd`) · `4115fcb` (B6)
+  · `e2d7096` (C5, C10, C12). Pull request: #6, #8, #16. Tiêu chí ký ở commit `c46a4e4`.
+- Mã lần chạy dùng trong phần của tôi: base `R-base-before-20261118-154403-bde05c` (B6, B7.4); prepared vòng 1
+  `R-base-prepared-20261118-171734-0f18ac`; S2 prepared `R-S2-prepared-20261118-173329-0f18ac`; S2 after và grade cuối: mã ghi ở
+  Phiếu C mục C12.
+- Dòng trong phiếu: Phiếu A mục A1 (câu 1.1), A3, A4; Phiếu B mục B3, B6 (hai dòng Kinh doanh), B7.4; Phiếu C mục C5, C10
+  (dòng thứ hai), C12.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- Một điều học được: viết `decision_rule` và ký trước khi thấy số buộc quyết định phải theo bằng chứng. Dòng Tiếp tục đòi đạt
+  trên cả bộ nền **và** gói sự cố, nên ở v1 (mới có bộ nền) chỉ khẳng định được phần đã đo; đến v2, sau khi đo gói S2, mới đủ căn cứ.
+- Một điều còn chưa chắc: trên dữ liệu mock, gói S2 sau khi sửa tốn 6.580đ/ticket, ROI 0,52, sát trần 7.000đ và ngưỡng 0,4. Tôi chưa
+  chắc chi phí duyệt thật (kiểm mẫu 30%, thêm ca chuyển người khi REFUND-v4 hạ hạn mức tự động xuống 100.000đ) còn giữ được ROI ≥ 0,4.
 
 ## TranVietThinh-2A202603661
 

@@ -5,12 +5,12 @@
     "VuQuangMinh-2A202603657",
     "TranVietThinh-2A202603661"
   ],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "incident": "S2",
+  "decision_v1": "Tiếp tục",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Mọi cổng hoàn tiền và ghi lỗi hãng đều tin rằng tracking DB do hãng vận chuyển cập nhật (`delivered_date`, `delay_cause`) là đúng và kịp thời, nhưng ngoài thực tế hãng có thể quét sót, nhập bù tay, hoặc có động cơ ghi `delay_cause = FORCE_MAJEURE` để tránh bị phạt (GHSH bị phạt 150.000đ mỗi lỗi và bị đình chỉ sau 3 lỗi trong 7 ngày).",
+    "reduce_or_prevent": "Cổng NGĂN được việc shop bị trừ tiền và khoản không phê duyệt bị ghi, vì mọi lệnh `issue_refund` bị tính lại số tiền, `payer` và phê duyệt từ nguồn sự thật trước khi ghi (gói S2 sau sửa: trừ tiền shop 0đ, hoàn sai 0đ); nhưng xét toàn hệ thống thì chỉ GIẢM khả năng, vì cổng tin tracking DB và sổ cái, nên DB sai hoặc khoản hoàn ghi ngoài sổ vẫn lọt qua.",
+    "measure_in_pilot": "Đo lại chi phí thật mỗi ticket và ROI khi kiểm mẫu 30% (mock: 6.580đ và 0,52, sát trần 7.000đ và ngưỡng 0,4), tỉ lệ ticket có `checkout_note` chứa chỉ thị (`refund_guard_intervention_rate`, mock 0,33), và tỉ lệ `delay_cause` bị hãng sửa lại sau đối soát với chị Oanh."
   }
 }
