@@ -33,3 +33,10 @@ lab10/ops.py text eol=lf
 lab10/tools.py text eol=lf
 lab10/trace.py text eol=lf
 lab10/world.py text eol=lf
+
+# Files hashed into code_hash (lab10/eval.py EDITABLE): keep LF on every checkout so the final
+# grade report hash matches the repo even on machines with core.autocrlf=true.
+lab10/guards.py text eol=lf
+lab10/monitors.py text eol=lf
+config/switches.json text eol=lf
+config/operating_gates.json text eol=lf
