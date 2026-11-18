@@ -97,17 +97,20 @@ Sản phẩm và kinh doanh: mục tiêu, tiêu chí và ngưỡng, chi phí, RO
 Vai Vận hành và pháp lý:
 - Khối 1: Phiếu A (Mục A1 câu 1.2, A2 câu 1.4); rà soát ngưỡng an toàn, chi phí và vận hành trong `config/acceptance_criteria.json`.
 - Khối 2: Giữ chính Phiếu B (`templates/form-b-evaluation-gates.md`); phân tích HAZOP mở rộng (B4), lập Checklist 9 nhóm việc Go-live kèm PIC (B5), cấu hình cổng vận hành và pháp lý trong `config/operating_gates.json` (mục operations, legal); viết Runbook 1–3 và phương án Giờ cao điểm (B7.5, B7.6).
-- Khối 3: Phân tích sự cố vòng 2 dưới góc nhìn con người và quy trình (Phiếu C: C3, C4, C5, C10, C11); kiểm tra toàn bộ hồ sơ trước khi nộp.
+- Khối 3: Phân tích sự cố vòng 2 dưới góc nhìn con người và quy trình (Phiếu C: C3.1, C4, C10, C11); kiểm tra toàn bộ hồ sơ trước khi nộp.
 
 ### Đóng góp cụ thể
 
-- Đã hoàn thành câu 1.2 (mục tiêu hệ thống dưới góc nhìn chị Oanh kế toán đối soát và chị Hạnh trưởng ca CSKH) trong Phiếu A.
-- Đã hoàn thành câu 1.4 (thiết kế Telemetry production giám sát rủi ro ghi lỗi oan cho hãng vận chuyển đối tác bên ngoài) trong Phiếu A.
-- Thống nhất cùng nhóm các ngưỡng an toàn vận hành: wrongful_refund_vnd_max = 0, wrongful_carrier_faults_max = 0, pii_leaks_max = 0, queue_stuck_max = 0, escalation_rate_max <= 0.3.
+- Khối 1: Đã hoàn thành câu 1.2 (mục tiêu hệ thống dưới góc nhìn chị Oanh kế toán đối soát và chị Hạnh trưởng ca CSKH) và câu 1.4 (thiết kế Telemetry production giám sát rủi ro ghi lỗi oan cho hãng vận chuyển đối tác) trong Phiếu A; thống nhất các ngưỡng an toàn vận hành.
+- Khối 2: Hoàn thành HAZOP mở rộng B4 trên `file_carrier_fault`; Checklist 9 nhóm việc Go-live B5; Pre-mortem B6 ở lăng kính Con người & vận hành và Pháp lý; xây dựng Runbook 1–3 và phương án Giờ cao điểm B7.5, B7.6; cấu hình `operations` và `legal` trong `config/operating_gates.json`.
+- Khối 3 (thẻ sự cố S2): Phân tích mức kiểm soát của con người C3.1; HAZOP C4 trên `issue_refund` (chặn trừ nợ shop oan, kiểm tra phê duyệt, trần lạm dụng hoàn tiền); bổ sung dòng Risk register C10; cập nhật Checklist và Runbook 4–5 trong C11; rà soát tính nhất quán toàn bộ hồ sơ trước khi nộp.
 
 ### Bằng chứng
 
-- Phiếu A: `templates/form-a-criteria.md` dòng mục A1 (câu 1.2) và mục A2 (câu 1.4).
+- Phiếu A: `templates/form-a-criteria.md` mục A1 (câu 1.2) và mục A2 (câu 1.4).
+- Phiếu B: `templates/form-b-evaluation-gates.md` mục B4, B5, B6 (dòng Con người & Pháp lý), B7.5, B7.6, B8.
+- Phiếu C: `templates/form-c-incident.md` mục C3.1, C4, C10 (dòng 1), C11 (Checklist và Runbook 4–5), C12 (ký v2).
+- Config: `config/operating_gates.json` mục `operations` (PIC `NV-TUNG`, stop_conditions có `merchant_debit_vnd > 0`, `review_sampling_pct` 30) và mục `legal` (chặn PII, nguyên nhân lỗi hãng).
 - Branch làm việc: `ops/2A202603661`.
 
 ### Exit ticket
