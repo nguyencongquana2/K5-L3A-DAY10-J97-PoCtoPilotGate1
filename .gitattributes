@@ -10,3 +10,26 @@ submission/config/** -text
 submission/runs/** -text
 submission/docs/** -text
 submission/manifest.json -text
+
+# Instructor files are hashed as LF bytes in lab10/MANIFEST.json.
+# Apply on checkout even when a collaborator has core.autocrlf=true.
+.gitattributes text eol=lf
+data/** text eol=lf
+incidents/** text eol=lf
+tests/test_public.py text eol=lf
+lab10/__init__.py text eol=lf
+lab10/_gradectx.py text eol=lf
+lab10/_noop_guards.py text eol=lf
+lab10/agent.py text eol=lf
+lab10/check_submission.py text eol=lf
+lab10/checkpoint.py text eol=lf
+lab10/criteria.py text eol=lf
+lab10/eval.py text eol=lf
+lab10/gate.py text eol=lf
+lab10/grade.py text eol=lf
+lab10/helpers.py text eol=lf
+lab10/mock_llm.py text eol=lf
+lab10/ops.py text eol=lf
+lab10/tools.py text eol=lf
+lab10/trace.py text eol=lf
+lab10/world.py text eol=lf
