@@ -27,8 +27,8 @@ rồi mới chạy đánh giá. Khối 1 không sửa code.
 
 ### Câu 1.2 · Mục tiêu nhìn từ hai người
 
-- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): …
-- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): …
+- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): Sai lệch đối soát định kỳ hàng tuần bằng 0 đồng. Số tiền bồi hoàn thực tế từ sổ cái (ledger) phải khớp 100% với biên bản chốt công nợ với các shop và hãng vận chuyển; không có trường hợp ghi lỗi oan (wrongful_carrier_faults = 0) gây thất thoát ngân sách LogiX hoặc làm phạt nhầm/đình chỉ oan đối tác vận tải (như GHSH hay DNB chỉ cần 3 lỗi trong 7 ngày là bị treo tài khoản).
+- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): Kiểm soát tải hàng chờ duyệt trong ngưỡng SLA 60 phút. Tỉ lệ ca chuyển sang người duyệt (escalation_rate) không vượt quá công suất ca trực (tối đa 6 ca/giờ/người, tương đương 48 ca/ca 8 tiếng theo ops_facts), đảm bảo số vé bị kẹt hàng chờ (queue_stuck) bằng 0 để nhân viên không bị quá tải và khách hàng không bức xúc vì phải chờ đợi.
 
 ---
 
@@ -51,12 +51,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
-| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Bước / hành vi được đo** | | Hành vi tự động ghi lỗi cho hãng vận chuyển (`record_carrier_strike`) và phạt tiền/đình chỉ đối tác bên ngoài LogiX. |
+| **Thước đo** (một câu, có đơn vị) | | Tỉ lệ số lệnh ghi lỗi hãng phát sinh khiếu nại phản đối từ hãng vận chuyển qua portal đối soát trong vòng 24 giờ (Đơn vị: %). |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | Log sự kiện ghi lỗi từ sổ cái LogiX (`audit_logs.carrier_strikes`) đối chiếu với số vé khiếu nại tiếp nhận qua cổng đối soát hãng (`carrier_portal_disputes`). Thu thập liên tục 100% các ca tự động ghi lỗi; không cần gán nhãn thủ công (tín hiệu khiếu nại phát sinh trực tiếp khi hãng bấm nút 'Phản đối lỗi' trên portal). |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | `Tỉ lệ khiếu nại = (Số lỗi bị hãng khiếu nại phản đối / Tổng số lỗi do trợ lý tự động ghi trong kỳ) * 100%`. Mẫu số là tổng số lệnh ghi lỗi thành công. Nếu trong kỳ trợ lý không ghi lỗi nào (mẫu số = 0), ghi nhận bằng 0% và đếm riêng. |
+| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | Khung thời gian: Rolling 24 giờ (hoặc chốt theo chu kỳ đối soát 7 ngày). Ngưỡng báo động đỏ (P1 alert): Khi có >= 1 khiếu nại đối soát từ các hãng vận chuyển nhỏ (GHSH, DNB), HOẶC tổng số lỗi tự động ghi cho cùng 1 hãng vượt quá 2 lỗi/ngày (chạm trần `max_auto_strikes_per_carrier_per_day` trong `ops_limits`). |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | | Không phát hiện được trường hợp hãng bị ghi lỗi oan nhưng chấp nhận chịu phạt ngậm bồ hòn làm ngọt mà không khiếu nại (ví dụ tài xế độc lập của DNB không rành công nghệ để gửi đơn phản ánh qua portal). |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
