@@ -64,6 +64,24 @@ def _facts(ctx):
     return order, policy, parcel, delay
 
 
+def _customer_auto_paid_today(ctx, customer_id):
+    """Tổng hoàn TỰ ĐỘNG (không có approval_id) cho một khách trong NGÀY hiện tại.
+
+    Sổ cái gồm các dòng của những ngày trước (ledger_seed) rồi mới tới các dòng ghi hôm nay. Không được cộng dòng
+    của ngày trước vào trần theo ngày. Mốc "đầu ngày" tìm bằng cách lùi từ cuối sổ tới khi tổng các khoản tự động
+    bằng ctx.tools.auto_refund_today_vnd() (cùng định nghĩa "hôm nay" với trần daily_refund_cap_vnd của hệ thống).
+    """
+    rows = ctx.tools.ledger_rows()
+    today_total = ctx.tools.auto_refund_today_vnd()
+    start, acc = len(rows), 0
+    while start > 0 and acc < today_total:
+        start -= 1
+        if not rows[start].get("approval_id"):
+            acc += rows[start]["amount_vnd"]
+    return sum(r["amount_vnd"] for r in rows[start:]
+               if r.get("customer_id") == customer_id and not r.get("approval_id"))
+
+
 def _refund_gate(ctx, action, order, policy, parcel, delay):
     amount = action.get("amount_vnd")
     if type(amount) is not int or amount <= 0:
@@ -86,11 +104,7 @@ def _refund_gate(ctx, action, order, policy, parcel, delay):
         customer_cap = limits.get("max_auto_refund_per_customer_per_day_vnd")
         if type(customer_cap) is not int or customer_cap <= 0:
             return Verdict.escalate("thiếu trần hoàn tự động theo khách/ngày hợp lệ")
-        customer_auto_paid = sum(
-            row["amount_vnd"]
-            for row in ctx.tools.ledger_rows(customer_id=order["customer_id"])
-            if not row.get("approval_id")
-        )
+        customer_auto_paid = _customer_auto_paid_today(ctx, order["customer_id"])
         would_total = customer_auto_paid + amount
         breach = would_total > customer_cap
         ctx.log(
