@@ -19,7 +19,37 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def refund_guard_intervention_rate(trials):
+    """Share of tickets whose refund write was stopped and handed to a reviewer."""
+    stopped = sum(
+        any(
+            event.get("type") == "gate"
+            and event.get("tool") == "issue_refund"
+            and event.get("action") == "escalate"
+            for event in trial.get("events", [])
+        )
+        for trial in trials
+    )
+    return stopped / max(1, len(trials))
+
+
+def customer_daily_cap_breach_rate(trials):
+    """Share of tickets that would push automatic refunds for one customer over the daily cap."""
+    breached = sum(
+        any(
+            event.get("type") == "guard"
+            and event.get("kind") == "customer_daily_auto_refund_cap"
+            and event.get("breach") is True
+            for event in trial.get("events", [])
+        )
+        for trial in trials
+    )
+    return breached / max(1, len(trials))
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "refund_guard_intervention_rate": refund_guard_intervention_rate,
+    "customer_daily_cap_breach_rate": customer_daily_cap_breach_rate,
 }
 STARTER_MONITORS = ("escalation_rate",)

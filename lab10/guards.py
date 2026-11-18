@@ -81,6 +81,31 @@ def _refund_gate(ctx, action, order, policy, parcel, delay):
     if paid > 0:
         return Verdict.escalate("đã hoàn một phần, cần đối soát trước khi ghi thêm")
     approval_id = action.get("approval_id")
+    if not approval_id:
+        limits = ctx.tools.ops_limits()
+        customer_cap = limits.get("max_auto_refund_per_customer_per_day_vnd")
+        if type(customer_cap) is not int or customer_cap <= 0:
+            return Verdict.escalate("thiếu trần hoàn tự động theo khách/ngày hợp lệ")
+        customer_auto_paid = sum(
+            row["amount_vnd"]
+            for row in ctx.tools.ledger_rows(customer_id=order["customer_id"])
+            if not row.get("approval_id")
+        )
+        would_total = customer_auto_paid + amount
+        breach = would_total > customer_cap
+        ctx.log(
+            "customer_daily_auto_refund_cap",
+            customer_id=order["customer_id"],
+            auto_paid_vnd=customer_auto_paid,
+            proposed_vnd=amount,
+            would_total_vnd=would_total,
+            cap_vnd=customer_cap,
+            breach=breach,
+        )
+        if breach:
+            return Verdict.escalate(
+                "vượt trần hoàn tự động theo khách/ngày: chờ người duyệt"
+            )
     if approval_id or amount > policy["auto_limit_vnd"]:
         approver = ctx.gates.get("operations", {}).get("approver_id")
         approvals = ctx.tools.lookup_approvals(approval_id=approval_id) if approval_id else []
