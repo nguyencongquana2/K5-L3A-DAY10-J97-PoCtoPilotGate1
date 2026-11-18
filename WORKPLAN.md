@@ -8,10 +8,10 @@ Trưởng nhóm điền họ tên/MSSV vào cột cuối trước khi bắt đ�
 
 | Ghế | Trách nhiệm chính | Người nhận |
 |---|---|---|
-| Trưởng nhóm · tích hợp và phát hành | Điều phối branch/PR, giữ timeline, chạy test, thực hiện các lệnh ký/chốt/gom bài sau khi cả nhóm duyệt | `CHƯA GÁN` |
-| Kỹ sư cổng | Eval/trace, guard, test hồi quy, monitor và bằng chứng lần chạy | `CHƯA GÁN` |
-| Sản phẩm và kinh doanh | Mục tiêu, tiêu chí/ngưỡng, chi phí–ROI–phạm vi pilot, quyết định v1/v2 | `CHƯA GÁN` |
-| Vận hành và pháp lý | HAZOP, checklist/PIC, hàng chờ duyệt, PII, runbook, risk register và kiểm bài nộp | `CHƯA GÁN` |
+| Trưởng nhóm · tích hợp và phát hành | Điều phối branch/PR, giữ timeline, chạy test, thực hiện các lệnh ký/chốt/gom bài sau khi cả nhóm duyệt | Nguyễn Công Quân · `2A202603675` |
+| Kỹ sư cổng | Eval/trace, guard, test hồi quy, monitor và bằng chứng lần chạy | Nguyễn Công Quân · `2A202603675` |
+| Sản phẩm và kinh doanh | Mục tiêu, tiêu chí/ngưỡng, chi phí–ROI–phạm vi pilot, quyết định v1/v2 | Vũ Quang Minh · `2A202603657` |
+| Vận hành và pháp lý | HAZOP, checklist/PIC, hàng chờ duyệt, PII, runbook, risk register và kiểm bài nộp | Trần Việt Thịnh · `2A202603661` |
 
 ## 2. Quy tắc Git và quyền sửa file
 
