@@ -1,7 +1,7 @@
 {
-  "run_id": "R-S2-after-20261118-204823-9cb49b",
+  "run_id": "R-S2-after-20261118-210738-de0eec",
   "note": "lab10.grade S2: mốc after (sau khi sửa)",
-  "code_hash": "9cb49b01eaef5e030eb8cd1a38e4783584ca03be034378247e7007cec55d9f74",
+  "code_hash": "de0eec23473648b4c6e49445d0307f79bea8df8d66662b3aa421c2bc3b9b9ba0",
   "suite": "S2",
   "stage": "after",
   "trials": 75,

@@ -34,7 +34,7 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 | 2 | `R-S2-after-20261118-173833-14517c` | S2 · after | Thêm một cổng: tổng hoàn tự động theo khách/ngày; thêm monitor can thiệp | 1,0000 · [1,0000; 1,0000] | 1,0000 | 0 · 0 · 0 | 0,3333 | 75/75 đạt; tổng tự động dừng ở 282.000đ, ROI 0,65, không vượt trần. |
 | 3 | `R-S2-after-20261118-174301-f26ae8` | S2 · after | Không đổi logic; grade chạy lại trên byte LF cuối cùng | 1,0000 · [1,0000; 1,0000] | 1,0000 | 0 · 0 · 0 | 0,3333 | Kết quả lặp lại; `PASS-VISIBLE`, hai monitor mới sáng đèn. |
 | 4 | `R-base-after-20261118-174317-f26ae8` | base · after | Kiểm không regression trên code S2 cuối cùng | 1,0000 · [1,0000; 1,0000] | 1,0000 | 0 · 0 · 0 | 0,2273 | 110/110 đạt; chi phí 4.456đ, ROI 1,24, không thêm ca hỏng. |
-| 5 | `R-S2-after-20261118-204823-9cb49b` (grade `R-S2-grade-20261118-204823-9cb49b`) | S2 · after (grade cuối) | Ghép config kiểm mẫu 30% của Thịnh, và sửa trần theo khách/ngày để chỉ đếm khoản của hôm nay (`7b677c2`) | 1,0000 · [1,0000; 1,0000] | 1,0000 | 0 · 0 · 0 | 0,3333 | `PASS-VISIBLE`, mọi ô ✅. S2: 6.580đ/ticket, ROI 0,52; bộ nền: 110/110, 5.184đ, ROI 0,93. Đây là mã dùng cho C9 và C12. |
+| 5 | `R-S2-after-20261118-210738-de0eec` (grade `R-S2-grade-20261118-210738-de0eec`) | S2 · after (grade cuối) | Ghép config kiểm mẫu 30% của Thịnh, và sửa trần theo khách/ngày để chỉ đếm khoản của hôm nay (`7b677c2`) | 1,0000 · [1,0000; 1,0000] | 1,0000 | 0 · 0 · 0 | 0,3333 | `PASS-VISIBLE`, mọi ô ✅. S2: 6.580đ/ticket, ROI 0,52; bộ nền: 110/110, 5.184đ, ROI 0,93. Đây là mã dùng cho C9 và C12. |
 
 ---
 
@@ -360,7 +360,7 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 
 <a id="c9"></a>
 
-## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S2-grade-20261118-204823-9cb49b`)
+## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S2-grade-20261118-210738-de0eec`)
 
 Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [gate … hỏng]` và ghi:
 
@@ -440,12 +440,12 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 |---|---|
 | Commit ký tiêu chí | `c46a4e48ec068ff8e64536ef816e0c419a76dae4` (giống v1) |
 | Hash chốt cổng vòng 1 | `103a019b` (giống v1) |
-| Mã lần chạy dùng làm bằng chứng | thẻ S2, mốc base: `R-S2-before-20261118-204823-9cb49b` · prepared: `R-S2-prepared-20261118-204823-9cb49b` · after: `R-S2-after-20261118-204823-9cb49b` (cùng một lần grade cuối `R-S2-grade-20261118-204823-9cb49b`) |
+| Mã lần chạy dùng làm bằng chứng | thẻ S2, mốc base: `R-S2-before-20261118-210738-de0eec` · prepared: `R-S2-prepared-20261118-210738-de0eec` · after: `R-S2-after-20261118-210738-de0eec` (cùng một lần grade cuối `R-S2-grade-20261118-210738-de0eec`) |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không. Report ở mốc after ghi "Không vượt trần kinh doanh / vận hành nào" và "Mọi ngưỡng đã ký đều đạt". Gói S2: chi phí 6.580đ/ticket (trần 7.000đ), ROI 0,52 (ngưỡng 0,4), tổng hoàn tự động 282.000đ/ngày (trần 2.000.000đ), ticket tốn LLM nhiều nhất 926đ (trần 1.500đ), 0 ca ùn. Bộ nền: chi phí 5.184đ/ticket, ROI 0,93. |
 | Kho hoặc hãng có số xấu nhất: **kho HN trên gói S2**, chi phí 7.362đ/ticket, cao nhất các kho. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Khối "theo kho và hãng" trong output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Không đổi. HN vẫn rẻ hơn làm tay (10.000đ) và an toàn đạt hết (pass_rate 1,0, hoàn sai 0, lỗi hãng oan 0). Ngưỡng 7.000đ đã ký áp cho chi phí trung bình (6.580đ), không áp cho từng kho. Tuy vậy HN đã vượt 7.000đ nếu đọc riêng, nên là kho đầu tiên bị cắt về làm tay nếu chi phí thật trong pilot vẫn vượt 7.000đ (dòng thứ hai ở C10). Kho `?` trên bộ nền (10.359đ) chỉ là 1 ticket không tra được đơn, luôn chuyển người. |
 | Quyết định (khoanh một) | **Tiếp tục**: chạy thử ở 2 depot theo kế hoạch, giữ `pilot_scope` = `all`, kiểm mẫu 30%, cổng vòng 2 |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-S2-after-20261118-204823-9cb49b`, gói S2, mốc after: pass_rate 1,0 (≥ 0,93), pass_k 1,0 (≥ 0,86), hoàn sai 0đ, lỗi hãng oan 0, lộ dữ liệu cá nhân 0, nên 5/5 ngưỡng bắt buộc đạt. `merchant_debit_vnd` = 0, `escalation_rate` 0,3333 (≤ 0,35). |
-| Bằng chứng 2 | `R-S2-grade-20261118-204823-9cb49b` (phần bộ nền trong báo cáo grade), mốc after: pass_rate 1,0, pass_k 1,0, hoàn sai 0, lỗi hãng oan 0, lộ dữ liệu 0; không ca nào đang đúng bị hỏng (regression ✅); chi phí 5.184đ/ticket, ROI 0,93. |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-S2-after-20261118-210738-de0eec`, gói S2, mốc after: pass_rate 1,0 (≥ 0,93), pass_k 1,0 (≥ 0,86), hoàn sai 0đ, lỗi hãng oan 0, lộ dữ liệu cá nhân 0, nên 5/5 ngưỡng bắt buộc đạt. `merchant_debit_vnd` = 0, `escalation_rate` 0,3333 (≤ 0,35). |
+| Bằng chứng 2 | `R-S2-grade-20261118-210738-de0eec` (phần bộ nền trong báo cáo grade), mốc after: pass_rate 1,0, pass_k 1,0, hoàn sai 0, lỗi hãng oan 0, lộ dữ liệu 0; không ca nào đang đúng bị hỏng (regression ✅); chi phí 5.184đ/ticket, ROI 0,93. |
 | Bằng chứng 3 | Khối kinh doanh và vận hành của gói S2 ở mốc after: chi phí 6.580đ ≤ 7.000đ, ROI 0,52 ≥ 0,4, `queue_stuck` 0, nên 3/3 ngưỡng `business_ops` đạt. Report tự kiểm tra: integrity, criteria, visible, regression, monitor đều ✅, kết luận `PASS-VISIBLE`. |
 | Khớp dòng nào trong `decision_rule` đã ký? | Dòng **Tiếp tục**: "Ở mốc after, trên cả bộ nền và gói sự cố: đạt đủ 5 ngưỡng required và 3 ngưỡng business_ops, report không còn dòng 'vượt trần' nào." Ở v1 mới đo được bộ nền; v2 đã đo đủ cả bộ nền và gói S2. |
 | Nếu Thu hẹp: cắt kho nào / còn bao nhiêu phần trăm / mấy người trực, và ticket bị cắt đi đâu | Không áp dụng. Điều kiện chuyển sang Thu hẹp đã ghi sẵn ở C10: kho nào vượt 7.000đ/ticket hai tuần liền thì cắt kho đó về làm tay bằng `business.pilot_scope`, giữ 1 người trực. |
@@ -456,7 +456,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 **Chỉ ở v2**
 - Quyết định đổi hay giữ so với v1? Vì con số nào: Giữ **Tiếp tục**, nhưng bằng chứng mạnh hơn. Trên gói S2 ở mốc prepared, cổng vòng 1 chưa đủ: pass_rate 0,8667 (dưới 0,93), hoàn sai 1.080.000đ, 10 lỗi hãng oan, ROI −1,93. Nếu dừng ở đây thì theo `decision_rule` không được chọn Tiếp tục. Sau vòng sửa, mốc after đạt hết: pass_rate 1,0, hoàn sai 0, lỗi hãng oan 0, ROI 0,52. Cái giá là chi phí S2 lên 6.580đ/ticket và ROI bộ nền giảm từ 1,24 còn 0,93, do kiểm mẫu tăng lên 30%.
-- Report tự kiểm tra: mã lần chạy `R-S2-grade-20261118-204823-9cb49b` · ô nào còn đỏ (nguyên nhân × tầng): không ô nào đỏ. Integrity, criteria, visible, regression, monitor đều ✅; test ẩn chưa chạy nên kết luận là `PASS-VISIBLE`.
+- Report tự kiểm tra: mã lần chạy `R-S2-grade-20261118-210738-de0eec` · ô nào còn đỏ (nguyên nhân × tầng): không ô nào đỏ. Integrity, criteria, visible, regression, monitor đều ✅; test ẩn chưa chạy nên kết luận là `PASS-VISIBLE`.
 - Cổng vòng 1 (mốc prepared) đã đỡ được gì trước khi bàn biết sự cố, và bỏ sót gì: Cổng G1 (tính lại số tiền và `payer` từ DB, kiểm phê duyệt) đã đỡ toàn bộ khoản trừ tiền shop (`merchant_debit_vnd` từ 32.750.000đ xuống 0) và phần lớn khoản hoàn sai (từ 33.580.000đ xuống 1.080.000đ); pass_rate tăng từ 0,4667 lên 0,8667. Cổng này bỏ sót **trần cộng dồn 300.000đ/khách/ngày**: mỗi khoản riêng lẻ của loạt `S2-43`, `S2-44` đều đúng, nhưng cộng lại thì vượt. Khoản hoàn sai 1.080.000đ và 10 lỗi hãng oan còn lại đều đến từ đây. Đây là lỗi lăng kính Kinh doanh và Vận hành mà pre-mortem B6 chưa viết ra.
 - Report ghi "được phép cân nhắc Tiếp tục" hay "không đủ căn cứ"? Quyết định của bàn có khớp không: Report ghi "Được phép cân nhắc 'Tiếp tục'". Quyết định Tiếp tục khớp với report và với dòng Tiếp tục đã ký.
 - Một thứ bộ thử hôm nay chưa đo, và nó ảnh hưởng quyết định ra sao: Bộ thử chạy từng ticket một, nên chưa đo trường hợp **hai ticket của cùng một khách được xử lý cùng lúc**, hoặc CSKH hoàn tay ngoài sổ cái. Khi đó trần 300.000đ/khách/ngày (đếm từ sổ cái) có thể bị vượt. Vì vậy Tiếp tục kèm điều kiện theo dõi `customer_daily_cap_breach_rate` từ tuần đầu; nếu có một lần vượt trần thì chuyển mọi khoản của khách đó sang người duyệt.
